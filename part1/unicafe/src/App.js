@@ -50,9 +50,7 @@ const App = () => {
   const addGood = addOne(setGood, good)
   const addNeutral = addOne(setNeutral, neutral)
   const addBad = addOne(setBad, bad)
-
-  const total = good+neutral+bad
-
+  
   return (
     <div>
       <h1>Please leave feedback!</h1>
