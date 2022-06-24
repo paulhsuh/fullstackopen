@@ -6,12 +6,18 @@ const Button = ({onClick, text}) => (
   </button>
 )
 
-const StatisticLine = ({label, content}) => (
-  <tr>
+const StatisticLine = ({label, content}) => {
+  if (label==="Positive:"){
+    return <tr>
+      <td> {label} </td> 
+      <td> {content} % </td>
+    </tr>
+  }
+  return <tr>
     <td> {label} </td> 
     <td> {content} </td>
   </tr>
-)
+}
 
 const Statistics = ({good, neutral, bad}) => {
   const total = good + neutral + bad
