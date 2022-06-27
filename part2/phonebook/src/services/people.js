@@ -8,9 +8,9 @@ const getAll = () => (
   .then( response => response.data)
 )
 
-const add = () => (
+const add = (newObject) => (
   axios
-    .post(baseURL)
+    .post(baseURL, newObject)
     .then(response => response.data)
 )
 
