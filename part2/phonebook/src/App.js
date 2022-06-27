@@ -26,23 +26,42 @@ const App = () => {
     persons.find( (person) => person.name === newName)
   )
 
+  const addNewPerson = () => {
+    const newPerson = {
+      name: newName,
+      number: newNumber
+    }
+    peopleServices
+      .add(newPerson)
+      .then( (data) => {
+        setPersons(persons.concat(data))
+        setNewName('')
+        setNewNumber('')
+      })
+  }
+
+  const updatePerson = (person) => {
+    const updatedPerson = { ...person, number: newNumber}
+    peopleServices
+      .update(person.id, updatedPerson)
+      .then ( (data) => {
+        setPersons(persons.map( (person) => person.name === data.name ? data : person))
+        setNewName('')
+        setNewNumber('')
+      })
+  }
+
   const addPerson = (event) => {
     event.preventDefault()
-    if (personExists()) {
-      alert(`${newName} is already added to phonebook.`)
+    const searchedPerson = personExists()
+    if (searchedPerson) {
+      const confirmed = window.confirm(`${searchedPerson.name} is already added to the phonebook, replace the old number with a new one?`)
+      if (confirmed) {
+        updatePerson(searchedPerson)
+      }
     }
     else {
-      const newPerson = {
-        name: newName,
-        number: newNumber
-      }
-      peopleServices
-        .add(newPerson)
-        .then( (data) => {
-          setPersons(persons.concat(data))
-          setNewName('')
-          setNewNumber('')
-        })
+      addNewPerson()
     }
   }
 
