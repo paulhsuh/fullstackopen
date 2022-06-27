@@ -2,6 +2,23 @@ import axios from 'axios'
 import {useState, useEffect} from 'react'
 
 function Country( {countryInfo} ) {
+  const [temp, setTemp] = useState(0)
+  const [wind, setWind] = useState(0)
+  const [iconURL, setIconURL] = useState('')
+
+  useEffect( () => {
+    const api_key = process.env.REACT_APP_API_KEY
+    const [lat, lon] = countryInfo.latlng
+    axios
+      .get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}&units=metric`)
+      .then( (response) => {
+        setTemp(response.data.main.temp)
+        setWind(response.data.wind.speed)
+        const icon = response.data.weather[0].icon
+        setIconURL(`http://openweathermap.org/img/wn/${icon}@2x.png`)
+      })
+  })
+
   return (
     <div>
       <h1>{countryInfo.name.common}</h1>
@@ -15,27 +32,16 @@ function Country( {countryInfo} ) {
           </li>
         ))}
       </ul>
-      <div>
-        {countryInfo.flag}
-      </div>
+      <img src = {countryInfo.flags.png} alt = "country flag"/>
+      <h3> Weather in {countryInfo.name.common}</h3>
+      <p>Temperature: {temp} Celsius</p>
+      <p>Wind: {wind} m/s</p>
+      <img src={iconURL} alt = "weather icon"/>
     </div>
   )
 }
 
 function Countries({filteredCountries, displayCountry, setDisplayCountry}) {
-
-  // const countryMatch = (country) => {
-  //   if (search === '') return false;
-
-  //   const countryName = country.name.common.toLowerCase()
-  //   const filter = search.toLowerCase()
-
-  //   return countryName.includes(filter)
-  // }
-
-  // const queriedCountries = (allCountries.filter( country => {
-  //   return countryMatch(country)
-  // }))
 
   const content = () => {
     if (filteredCountries.length > 10) {
@@ -44,14 +50,14 @@ function Countries({filteredCountries, displayCountry, setDisplayCountry}) {
     else if (displayCountry.name) {
       return <Country countryInfo = {displayCountry} />
     }
-    else if (filteredCountries.length === 1){
-      return <Country countryInfo={filteredCountries[0]} />
+    else if (filteredCountries.length === 1) {
+      return <Country countryInfo = {filteredCountries[0]} />
     }
     else if (filteredCountries.length !== 1) {
       return (<ul> {filteredCountries.map( country => (
         <li key = {country.name.official}>
           {country.name.common}
-          <button onClick={() => setDisplayCountry(country)}>View</button>
+          <button onClick={() => setDisplayCountry(country)}>Show</button>
         </li>) )}
       </ul>)
       }
