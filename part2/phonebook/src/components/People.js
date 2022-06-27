@@ -1,4 +1,4 @@
-const People = ({persons, newSearch}) => {
+const People = ({persons, newSearch, removePerson}) => {
   const displayNumbers = () => {
     const filteredPersons = persons.filter( (person) => {
       let name = person.name.toLowerCase()
@@ -7,7 +7,7 @@ const People = ({persons, newSearch}) => {
     })
     return filteredPersons.map( (person) => (
     <div key={person.name}>
-      {person.name} {person.number}
+      {person.name} {person.number} <button onClick={() => removePerson(person)}>Delete</button>
     </div>)
   )}
 

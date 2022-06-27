@@ -14,7 +14,13 @@ const add = (newObject) => (
     .then(response => response.data)
 )
 
+const remove = (id) => (
+  axios
+    .delete(`${baseURL}/${id}`)
+)
+
 export default {
   getAll,
-  add
+  add,
+  remove
 }
