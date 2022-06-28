@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import People from './components/People'
 import PersonForm from './components/PersonForm'
+import Notification from './components/Notification'
 import peopleServices from './services/people'
 
 const App = () => {
@@ -9,12 +10,15 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
+  const [message, setMessage] = useState('')
 
   useEffect( () => {
     peopleServices
       .getAll()
       .then( data => {
       setPersons(data)
+      setMessage("Loaded past phonebook")
+      setTimeout( () => setMessage(null), 2000)
     })
   }, [])
 
@@ -37,6 +41,8 @@ const App = () => {
         setPersons(persons.concat(data))
         setNewName('')
         setNewNumber('')
+        setMessage(`Added ${data.name}`)
+        setTimeout( () => setMessage(null), 2000)
       })
   }
 
@@ -48,6 +54,8 @@ const App = () => {
         setPersons(persons.map( (person) => person.name === data.name ? data : person))
         setNewName('')
         setNewNumber('')
+        setMessage(`Updated ${data.name}'s number to ${data.number}`)
+        setTimeout( () => setMessage(null), 2000)
       })
   }
 
@@ -72,6 +80,8 @@ const App = () => {
         .remove(id)
         .then (() => {
           setPersons(persons.filter( (person) => person.id !== id))
+          setMessage(`Removed ${person.name}`)
+          setTimeout( () => setMessage(null), 2000)
         })
     }
   }
@@ -87,6 +97,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={message}/>
       <Filter newSearch = {newSearch} searchChange={searchChange}/>
       <PersonForm addPerson = {addPerson} newName={newName} nameChange={nameChange} newNumber={newNumber} numberChange={numberChange} />
       <People persons={persons} newSearch={newSearch} removePerson={removePerson}/>
