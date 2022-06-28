@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setNewSearch] = useState('')
   const [message, setMessage] = useState('')
+  const [error, setError] = useState(false)
 
   useEffect( () => {
     peopleServices
@@ -57,6 +58,14 @@ const App = () => {
         setMessage(`Updated ${data.name}'s number to ${data.number}`)
         setTimeout( () => setMessage(null), 2000)
       })
+      .catch( error => {
+        setMessage(`Information of ${person.name} has already been removed from this server`)
+        setError(true)
+        setTimeout( () => {
+          setMessage(null)
+          setError(false)
+        }, 2000)
+      })
   }
 
   const addPerson = (event) => {
@@ -97,7 +106,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={message}/>
+      <Notification message={message} error={error}/>
       <Filter newSearch = {newSearch} searchChange={searchChange}/>
       <PersonForm addPerson = {addPerson} newName={newName} nameChange={nameChange} newNumber={newNumber} numberChange={numberChange} />
       <People persons={persons} newSearch={newSearch} removePerson={removePerson}/>
